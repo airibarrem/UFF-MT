@@ -1,0 +1,76 @@
+
+SUPPLY CHAINS ************************************************************************
+
+SC.NAMES	Rice,   Coffee,   Coffee_r, Palm,     Beef,     Maize,     Cocoa,    Cocoa_s, Diverse
+
+YIELD.VALS	13,     0.840,    0.840,    12.71,    0.05996,  2.2,       0.93,     0.93,    1
+
+#YIELD_SEM.VALS	13.67,  0.871,    0.871,    13.01,    0.05996,  2.2,       2.2,	     2.2,     1
+
+PRICE.VALS	940,    616,      616,      400,      6200,     910,       610,      620,     0
+
+COST.VALS	672.52, 423.66,   424,      142.41,   5240,     800,       261.23,   261.23,  0
+
+PROD.VALS	712166, 74066.16, 19965.12, 311687.3, 12194.85, 503556.4,  79182.06, 7494.87, 510284.1
+
+INCR.VALS	1,      1,        1,        1,        1,        1,         1,        1,       1
+
+
+
+SPATIAL PRIORS ************************************************************************
+
+SP.DIR		./in/sp/
+
+
+Rice.WEIGHTS	Rice_wgt.txt
+
+Coffee.WEIGHTS	Coffee_wgt.txt
+
+Coffee_r.WEIGHTS	Coffee_r_wgt.txt
+
+Palm.WEIGHTS	Palm_wgt.txt
+
+Beef.WEIGHTS	Beef_wgt.txt
+
+Maize.WEIGHTS	Maize_wgt.txt
+
+Cocoa.WEIGHTS	Cocoa_wgt.txt
+
+Cocoa_s.WEIGHTS	Cocoa_s_wgt.txt
+
+Diverse.WEIGHTS	Diverse_wgt.txt
+
+
+
+LAND-USE / LAND-COVER MAP ************************************************************
+
+LU.FILE		SM-LU-COMB.tif
+
+LU.CLASSES	Rice, Maize, Coffee, Palm, Beef, Diverse, Other, Forest, Water
+
+LU.MASKS	Water
+
+LC.CLASSES	crop, crop, crop, for_plt, grass, crop, other, for_close, water_body
+
+LC.SLOPE	SM-SLOPE.tif
+
+
+
+TRAVEL-COST ANALYSIS *****************************************************************
+
+ROADS.FILE	SM-ROADS.tif
+
+ROADS.CLASSES	road_main, road_acc, road_trail, road_trail
+
+
+All_cities.PU	SM-URBAN-ALL.shp
+
+Big_cities.PU	SM-URBAN-10K_POP.shp
+
+
+
+
+
+
+
+

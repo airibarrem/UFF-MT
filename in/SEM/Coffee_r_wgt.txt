@@ -1,0 +1,42 @@
+landscape.LU	All
+
+landscape.VAL	78.6
+
+
+current.LU	Coffee
+
+current.VAL	-60
+
+
+potential.SP	SM-CAP-PERM.tif
+
+potential.VAL	0.1
+
+
+dist_cities.TC	All_cities
+
+dist_cities.VAL	-28.6
+
+
+ANP.SP		SM-PA-ANP.tif
+
+ANP.VAL		-60
+
+BPP.SP		SM-PA-BPP.tif
+
+BPP.VAL		-30
+
+NAT.SP		SM-PA-CNAT.tif
+
+NAT.VAL		-30
+
+CON.SP		SM-PA-CCON.tif
+
+CON.VAL		-30
+
+FOR.SP		SM-PA-CFOR.tif
+
+FOR.VAL		-30
+
+
+
