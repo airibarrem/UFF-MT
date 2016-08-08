@@ -1,72 +1,67 @@
 
-SUPPLY CHAINS ************************************************************************
+ SUPPLY CHAINS ************************************************************************ 
+ 
+SC.NAMES SOYA, SOMAI, SOCOT, CATTL, GPCTL, SINGL, SELOG, NOSYS 
+ 
+YIELD.VALS 1, 1, 1, 1, 1, 1, 1, 1 
+ 
+PRICE.VALS 1, 1, 1, 1, 1, 1, 1, 1 
+ 
+COST.VALS 1, 1, 1, 1, 1, 1, 1, 1 
+ 
+PROD.VALS 1, 1, 1, 1, 1, 1, 1, 1 
+ 
+INCR.VALS 1, 1, 1, 1, 1, 1, 1, 1 
+ 
 
-SC.NAMES	Rice,   Coffee,   Coffee_r,    Palm,     Beef,     Maize,     Cocoa,    Diverse
+ 
+ SPATIAL PRIORS *********************************************************************** 
+ 
+SP.DIR ./in/sp/ 
+ 
 
-YIELD.VALS	13,     0.840,    0.840,       12.71,    0.05996,  2.2,       0.93,	1
+ SOYA.WEIGHTS SOYA_wgt.txt 
+ 
+ SOMAI.WEIGHTS SOMAI_wgt.txt 
+ 
+ SOCOT.WEIGHTS SOCOT_wgt.txt 
+ 
+ CATTL.WEIGHTS CATTL_wgt.txt 
+ 
+ GPCTL.WEIGHTS GPCTL_wgt.txt 
+ 
+ SINGL.WEIGHTS SINGL_wgt.txt 
+ 
+ SELOG.WEIGHTS SELOG_wgt.txt 
+ 
+ NOSYS.WEIGHTS NOSYS_wgt.txt 
 
-PRICE.VALS	940,    616,      616,         400,      6200,     910,       610,      0
+ 
+ 
+ LAND-USE / LAND-COVER MAP ************************************************************* 
+ 
+LU.FILE LU2006.tif 
+ 
+LU.CLASSES SOYA, NOSYS, CATTL, SINGL, SOCOT, SOMAI, UNCL 
+ 
+LU.MASKS UNCL 
+ 
+LC.CLASSES crop, for_close, grass, crop, crop, crop, other 
+ 
+LC.SLOPE slope-MT.tif 
+ 
 
-COST.VALS	672.52, 423.66,   424,         142.41,   5240,     800,       261.23,   0
-
-PROD.VALS	858039, 60431.28, 33600,       410113.6, 12194.85, 503556.4,  86676.93, 510284.1
-
-INCR.VALS	1,      1,        1,           1,        1,        1,         1,        1
-
-
-
-SPATIAL PRIORS ************************************************************************
-
-SP.DIR		./in/sp/
-
-
-Rice.WEIGHTS	Rice_wgt.txt
-
-Coffee.WEIGHTS	Coffee_wgt.txt
-
-Coffee_r.WEIGHTS	Coffee_r_wgt.txt
-
-Palm.WEIGHTS	Palm_wgt.txt
-
-Beef.WEIGHTS	Beef_wgt.txt
-
-Maize.WEIGHTS	Maize_wgt.txt
-
-Cocoa.WEIGHTS	Cocoa_wgt.txt
-
-Diverse.WEIGHTS	Diverse_wgt.txt
-
-
-
-LAND-USE / LAND-COVER MAP ************************************************************
-
-LU.FILE		SM-LU-COMB.tif
-
-LU.CLASSES	Rice, Maize, Coffee, Palm, Beef, Diverse, Other, Forest, Water
-
-LU.MASKS	Water
-
-LC.CLASSES	crop, crop, crop, for_plt, grass, crop, other, for_close, water_body
-
-LC.SLOPE	SM-SLOPE.tif
-
-
-
-TRAVEL-COST ANALYSIS *****************************************************************
-
-ROADS.FILE	SM-ROADS.tif
-
-ROADS.CLASSES	road_main, road_acc, road_trail, road_trail
-
-
-All_cities.PU	SM-URBAN-ALL.shp
-
-Big_cities.PU	SM-URBAN-10K_POP.shp
-
-
-
-
-
-
-
-
+ 
+ TRAVEL COST ANALYSIS ****************************************************************** 
+ 
+ROADS.FILE roads-MT.tif 
+ 
+ROADS.CLASSES road_main, road_trail, road_trail, road_acc 
+ 
+ 
+Silos.PU silos-MT.shp 
+ 
+Slaughterhouses.PU sh-MT.shp 
+ 
+Markets.PU markets-MT.shp 
+ 

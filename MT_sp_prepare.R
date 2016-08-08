@@ -84,7 +84,6 @@ if (!('markets-MT.shp' %in% sp.files)){
   shapefile(markets, filename='./in/sp/markets-MT.shp')
 }
   
-
 if (!('UC-MT.tif' %in% sp.files)){
   UC = rcompose('./in/iis/UCs_mt_wgs.tif',bgd)
   UC = (UC>0)
@@ -109,7 +108,7 @@ cfg.vec = list(lu.names=lu.names, lu.yields=paste(rep(1,length(lu.names))),
                pu.files = c('silos-MT.shp', 'sh-MT.shp', 'markets-MT.shp') )
 
 # Printing the config file formatted using the cfg.vec above
-print.cfg(cfg.vec, out.dir='./in/')
+print.cfg(cfg.vec, out.dir='./in/BAU/')
 
 
 # Setting up weights files for whole state, per supply chain
@@ -155,8 +154,11 @@ wgt.vec$SELOG = list(sc.name='SELOG',
 lapply(wgt.vec,print.wgt,out.dir='./in/BAU/')
 
 # Runing harmonize data script for the whole state
-MT.data = harmonize.data(cfg.name='cfg.txt', cfg.dir='./in/', in.df=NULL,
-                         sf.on=T, cores=7, quiet=F)
+if (!('harmonized_input.Rdata' %in% dir('./'))){
+  MT.data = harmonize.data(cfg.name='cfg.txt', cfg.dir='./in/BAU/', in.df=NULL,
+                           sf.on=T, cores=7, quiet=F)
+  save(MT.data, file='harmonized_input.Rdata')
+}
 
 
 # Running main script and spliting the result
