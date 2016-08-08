@@ -54,7 +54,7 @@ LC.SLOPE slope-MT.tif
  
  TRAVEL COST ANALYSIS ****************************************************************** 
  
-ROADS.FILE slope-MT.tif 
+ROADS.FILE roads-MT.tif 
  
 ROADS.CLASSES road_main, road_trail, road_trail, road_acc 
  
@@ -62,4 +62,6 @@ ROADS.CLASSES road_main, road_trail, road_trail, road_acc
 Silos.PU silos-MT.shp 
  
 Slaughterhouses.PU sh-MT.shp 
+ 
+Markets.PU markets-MT.shp 
  
