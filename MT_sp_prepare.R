@@ -3,9 +3,11 @@
 
 rm(list=ls())
 
-master.dir = '/media/alvaro/Windows/Users/Alvaro/Documents/IIS_PROJECTS/SpAM/'
+#master.dir = '/media/alvaro/Windows/Users/Alvaro/Documents/IIS_PROJECTS/SpAM/'
+master.dir = 'C:/IIS/SpAM/'
 
 require('gdxrrw')
+require('maptools')
 source(paste0(master.dir,'LU_gen.R'))
 
 # Reading shapefiles produced using GDXplot.R from GAMS output model.gdx
@@ -29,7 +31,7 @@ lu = lapply(lu, function(x){row.names(x)=sp$BAU@data$codigo_ibg; return(x)})
 if (round(Reduce('*',rowSums(lu$BAU)),digits=6) != 1){warning('Inconsistent land-use input')}
 
 # Reading raster files currently inside ./in/iis/
-sp.files = c(grep('tif$',dir('./in/iis/'),value=T), grep('shp$',dir('./in/iis/'),value=T))
+sp.files = c(grep('tif$',dir('./in/sp/'),value=T), grep('shp$',dir('./in/sp/'),value=T))
 
 # Background (base) raster
 if (!('bgd.tif' %in% sp.files)){
@@ -76,42 +78,87 @@ if (!('sh-MT.shp' %in% sp.files)){
   shapefile(sh, filename='./in/sp/sh-MT.shp')  
 }
 
+if (!('markets-MT.shp' %in% sp.files)){
+  markets = readShapePoints('./in/iis/Cidades_MT.shp')
+  crs(markets) = crs(bgd)
+  shapefile(markets, filename='./in/sp/markets-MT.shp')
+}
+  
+if (!('UC-MT.tif' %in% sp.files)){
+  UC = rcompose('./in/iis/UCs_mt_wgs.tif',bgd)
+  UC = (UC>0)
+  writeRaster(UC, filename='./in/sp/UC-MT.tif')
+}
+
 
 # Setting up the config file for whole-state harmonize data run
+cfg.vec = list(lu.names=lu.names, lu.yields=paste(rep(1,length(lu.names))),
+               lu.prices = paste(rep(1,length(lu.names))),
+               lu.costs = paste(rep(1,length(lu.names))),
+               lu.prods = paste(rep(1,length(lu.names))),
+               lu.incrs = paste(rep(1,length(lu.names))),
+               lu.file = 'LU2006.tif',
+               lu.classes = c('SOYA', 'NOSYS', 'CATTL', 'SINGL', 'SOCOT', 'SOMAI', 'UNCL'),
+               lu.masks = c('UNCL'),
+               lc.classes = c('crop', 'for_close', 'grass', 'crop', 'crop', 'crop', 'other'),
+               lc.slope = 'slope-MT.tif',
+               tc.roads = 'roads-MT.tif',
+               road.cls = c('road_main', 'road_trail', 'road_trail', 'road_acc'),
+               pu.names = c('Silos', 'Slaughterhouses', 'Markets'),
+               pu.files = c('silos-MT.shp', 'sh-MT.shp', 'markets-MT.shp') )
 
-# config file setup: Supply chains
-cat(c('\n', 'SUPPLY CHAINS', '************************************************************************', '\n \n'), file='./in/cfg.txt')
-cat(c('SC.NAMES',paste(lu.names,collapse=', '),'\n \n'),file='./in/cfg.txt',append=T)
-cat(c('YIELD.VALS', paste(rep(1,length(lu.names)),collapse=', '),'\n \n'), file='./in/cfg.txt',append=T)
-cat(c('PRICE.VALS', paste(rep(1,length(lu.names)),collapse=', '),'\n \n'), file='./in/cfg.txt',append=T)
-cat(c('COST.VALS', paste(rep(1,length(lu.names)),collapse=', '),'\n \n'), file='./in/cfg.txt',append=T)
-cat(c('PROD.VALS', paste(rep(1,length(lu.names)),collapse=', '),'\n \n'), file='./in/cfg.txt',append=T)
-cat(c('INCR.VALS', paste(rep(1,length(lu.names)),collapse=', '),'\n \n'), file='./in/cfg.txt',append=T)
+# Printing the config file formatted using the cfg.vec above
+print.cfg(cfg.vec, out.dir='./in/BAU/')
 
-# config file setup: Spatial priors
-cat(c('\n \n', 'SPATIAL PRIORS', '***********************************************************************', '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('SP.DIR', './in/sp/', '\n \n'), file='./in/cfg.txt',append=T)
-cat(paste('\n', paste0(lu.names,'.WEIGHTS'), paste0(lu.names,'_wgt.txt'), '\n'), file='./in/cfg.txt', append=T)
 
-# config file setup: Land-use / land-cover map
-cat(c('\n \n \n', 'LAND-USE / LAND-COVER MAP', '*************************************************************', '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('LU.FILE', 'LU2006.tif', '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('LU.CLASSES', paste(c('SOYA', 'NOSYS', 'CATTL', 'SINGL', 'SOCOT', 'SOMAI', 'UNCL'),collapse=', '), '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('LU.MASKS', 'UNCL', '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('LC.CLASSES', paste(c('crop', 'for_close', 'grass', 'crop', 'crop', 'crop', 'other'),collapse=', '), '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('LC.SLOPE', 'slope-MT.tif', '\n \n'), file='./in/cfg.txt',append=T)
+# Setting up weights files for whole state, per supply chain
+wgt.vec = vector('list',length(lu.names)-1)
+names(wgt.vec) = lu.names[-length(lu.names)]
 
-# config file setup: Travel-cost analysis
-cat(c('\n \n', 'TRAVEL COST ANALYSIS', '******************************************************************', '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('ROADS.FILE', 'slope-MT.tif', '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('ROADS.CLASSES', paste(c('road_main', 'road_trail', 'road_trail', 'road_acc'),collapse=', '), '\n \n \n'), file='./in/cfg.txt',append=T)
-cat(c('Silos.PU', 'silos-MT.shp', '\n \n'), file='./in/cfg.txt',append=T)
-cat(c('Slaughterhouses.PU', 'sh-MT.shp', '\n \n'), file='./in/cfg.txt',append=T)
+wgt.vec$SOYA = list(sc.name='SOYA',
+                    lu.names = c('SOYA'), lu.weights = c(28.7),
+                    pu.names = c('Silos'), pu.weights = c(-28.6),
+                    sp.files = c('UC-MT.tif'),
+                    sp.weights = c(-1000))
 
+wgt.vec$SOMAI = list(sc.name='SOMAI',
+                    lu.names = c('SOMAI'), lu.weights = c(28.7),
+                    pu.names = c('Silos'), pu.weights = c(-28.6),
+                    sp.files = c('UC-MT.tif'),
+                    sp.weights = c(-1000))
+
+wgt.vec$CATTL = list(sc.name='CATTL',
+                    lu.names = c('CATTL'), lu.weights = c(28.7),
+                    pu.names = c('Slaughterhouses'), pu.weights = c(-28.6),
+                    sp.files = c('UC-MT.tif'),
+                    sp.weights = c(-1000))
+
+wgt.vec$GPCTL = list(sc.name='GPCTL',
+                     lu.names = c('CATTL'), lu.weights = c(28.7),
+                     pu.names = c('Slaughterhouses'), pu.weights = c(-28.6),
+                     sp.files = c('UC-MT.tif'),
+                     sp.weights = c(-1000))
+
+wgt.vec$SINGL = list(sc.name='SINGL',
+                     lu.names = c('SINGL'), lu.weights = c(28.7),
+                     pu.names = c('Markets'), pu.weights = c(-28.6),
+                     sp.files = c('UC-MT.tif'),
+                     sp.weights = c(-1000))
+
+wgt.vec$SELOG = list(sc.name='SELOG',
+                     lu.names = c('NOSYS'), lu.weights = c(28.7),
+                     pu.names = c('Markets'), pu.weights = c(-28.6),
+                     sp.files = c('UC-MT.tif'),
+                     sp.weights = c(-1000))
+
+lapply(wgt.vec,print.wgt,out.dir='./in/BAU/')
 
 # Runing harmonize data script for the whole state
-MT.data = harmonize.data(cfg.name='cfg.txt', cfg.dir='./in/', in.df=NULL,
-                         sf.on=T, cores=3, quiet=T)
+if (!('harmonized_input.Rdata' %in% dir('./'))){
+  MT.data = harmonize.data(cfg.name='cfg.txt', cfg.dir='./in/BAU/', in.df=NULL,
+                           sf.on=T, cores=7, quiet=F)
+  save(MT.data, file='harmonized_input.Rdata')
+}
 
 
 # Running main script and spliting the result
